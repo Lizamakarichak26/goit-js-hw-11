@@ -1,29 +1,29 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="./css/style.css" />
+        <title>Homework 11</title>
+    </head>
+    <body>
+        <form class="search-form" id="search-form">
+            <input
+                type="text"
+                name="searchQuery"
+                autocomplete="off"
+                placeholder="Пошук зображень..."
+            />
+            <button type="submit">Пошук</button>
+        </form>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Page title</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="./index.css" />
-</head>
+        <div class="gallery">
+            
+        </div>
 
-<body>
-  <section class="gallery-section">
-    <div class="container mint">
+        <button type="button" class="load-more is-hidden">Завантажити ще</button>
 
-      <form class="search-form js-search-form" id="search-form">
-        <input type="text" name="user-search-query" class="search-input" autocomplete="off"
-          placeholder="Искать здесь..." />
-        <button type="submit" class="search"></button>
-      </form>
-      <ul class="gallery js-gallery list"></ul>
-      <div class="target-element"></div>
-      <button type="button" class="load-more js-load-more is-hidden">Загрузить больше</button>
-    </div>
-  </section>
-  <script src="./js/gallery.js" type="module"></script>
-</body>
-
+        <script src="index.js" type="module"></script>
+    </body>
 </html>
