@@ -1,10 +1,6 @@
 import axios from 'axios';
 import Notiflix from 'notiflix';
 import './css/style.css';
-
-
-
-
 import { fetchImage } from './fetch.Form';
 import { createMarkup } from './create.Markup';
 
@@ -29,7 +25,7 @@ async function onSubmit(evt) {
   const inputValue = input.value;
   const value = inputValue.trim();
   if (!value) {
-    Notiflix.Notify.failure('Sorry, blank line. Enter your request!');
+    Notiflix.Notify.failure('Вибачте, порожній рядок. Введіть свій запит!');
     loadMore.hidden = true;
     return;
   }
@@ -44,14 +40,12 @@ async function fetchThen(value) {
     const number = resp.data.totalHits;
     if (array.length === 0) {
       Notiflix.Notify.failure(
-        'Sorry, there are no images your search query. Please try again'
+        'На жаль, немає зображень за вашим пошуковим запитом.Будь ласка спробуйте ще раз'
       );
       loadMore.hidden = true;
       return;
     }
-    if (number > 0) {
-      Notiflix.Notify.info(`Hooray! We found ${number} images.`);
-    }
+    
     createMarkup(array, gallery);
     lightbox.refresh();
     loadMore.hidden = false;
@@ -79,7 +73,7 @@ async function onLoadMoreBtn() {
       
       loadMore.hidden = true;
       Notiflix.Notify.info(
-        "We're sorry, but you've reached the end of search results."
+        "Вибачте, ви досягли кінця результатів пошуку."
       );
       return;
     }
@@ -87,7 +81,7 @@ async function onLoadMoreBtn() {
     console.log(error);
   }
 }
-// SCROLL
+
 function onPageScrolling() {
   const { height: cardHeight } =
     gallery.firstElementChild.getBoundingClientRect();

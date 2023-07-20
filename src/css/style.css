@@ -28,7 +28,7 @@ img {
 button {
   text-align: center;
   align-items: center;
-  background: linear-gradient(270deg, #d3c747, #db5634);
+  background: linear-gradient(270deg, #c347d3, #db3463);
   padding: 10px 20px;
   margin: 0 auto;
   border: none;
@@ -60,10 +60,10 @@ button:focus {
   width: 100%;
   background-image: linear-gradient(
     to right,
-    rgba(210, 203, 197, 0.878),
-    rgba(201, 189, 178, 0.878)
+    rgba(208, 129, 236, 0.878),
+    rgba(239, 135, 135, 0.878)
   );
-  padding: 20px;
+  padding: 50px;
 }
 
 .search-input {
@@ -93,13 +93,13 @@ button:focus {
 .photo-card {
   background: linear-gradient(
     270deg,
-    rgba(210, 203, 197, 0.878),
-    rgba(201, 189, 178, 0.878)
+    rgba(237, 120, 192, 0.878),
+    rgba(232, 153, 245, 0.878)
   );
   border: 1px solid black;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 20px rgba(243, 243, 243, 0.6);
+  box-shadow: 0 0 20px rgba(31, 237, 252, 0.6);
   transition: all 1s;
 }
 
@@ -120,11 +120,7 @@ button:focus {
 }
 
 .info {
-  display: flex;
-  flex-wrap: nowrap;
-  align-content: center;
-  justify-content: center;
-  color: #2d3131;
+  color: #fff;
   padding: 10px 0px 10px;
 }
 
