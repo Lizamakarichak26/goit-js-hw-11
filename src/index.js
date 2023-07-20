@@ -1,101 +1,98 @@
-import Notify from 'notiflix';
-import { gallery, btnLoadMore, searchForm } from './js/ref';
-import ApiService from './js/ApiService';
+import axios from 'axios';
+import Notiflix from 'notiflix';
+import './css/style.css';
 
-import { renderPhotoCard } from './js/renderPhotoCard';
 
-const imageApiService = new ApiService();
 
-searchForm.addEventListener('submit', onSearch);
-btnLoadMore.addEventListener('click', onBtnLoadMore);
 
-async function onSearch(evt) {
-    try {
-        evt.preventDefault();
-        cleanGallery();
+import { fetchImage } from './fetch.Form';
+import { createMarkup } from './create.Markup';
 
-        const searchQuery = evt.currentTarget.elements.searchQuery.value.trim();
 
-        if (!searchQuery) {
-            Notify.Notify.warning('Будь ласка, введіть щось для пошуку.');
 
-            isHiddenBtnLoadMore();
+const refs = {
+  form: document.querySelector('.search-form'),
+  input: document.querySelector('.search-input'),
+  gallery: document.querySelector('.gallery'),
+  loadMore: document.querySelector('.load-more'),
+};
+const { form, input, gallery, loadMore } = refs;
+let page = 1;
+form.addEventListener('submit', onSubmit);
+loadMore.addEventListener('click', onLoadMoreBtn);
+const lightbox = new SimpleLightbox('.gallery a', { captionDelay: 300 });
 
-            return;
-        }
-
-        imageApiService.query = searchQuery;
-        imageApiService.page = 1;
-        imageApiService.hits = 0;
-evt.currentTarget.reset();
-        const data = await imageApiService.fetchImage();
-        if (data.hits.length == 0) {
-            Notify.Notify.failure(
-                'На жаль, немає зображень, які відповідають вашому пошуковому запитую. Будь ласка спробуйте ще раз.'
-            );
-
-            isHiddenBtnLoadMore();
-
-            return;
-        }
-
-        renderPhotoCard(data);
-        visibleBtnLoadMore();
-        btnLoadMore.disabled = false;
-
-        Notify.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-    } catch (error) {
-        console.log('~ error', error);
+async function onSubmit(evt) {
+  evt.preventDefault();
+  gallery.innerHTML = '';
+  page = 1;
+  const inputValue = input.value;
+  const value = inputValue.trim();
+  if (!value) {
+    Notiflix.Notify.failure('Sorry, blank line. Enter your request!');
+    loadMore.hidden = true;
+    return;
+  }
+  return await fetchThen(value);
+}
+loadMore.hidden = true;
+// REQUEST
+async function fetchThen(value) {
+  try {
+    const resp = await fetchImage(value);
+    const array = resp.data.hits;
+    const number = resp.data.totalHits;
+    if (array.length === 0) {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images your search query. Please try again'
+      );
+      loadMore.hidden = true;
+      return;
     }
-}
-
-function cleanGallery() {
-    gallery.innerHTML = '';
-}
-
-function visibleBtnLoadMore() {
-    btnLoadMore.classList.remove('is-hidden');
-    btnLoadMore.classList.add('visible');
-}
-
-function isHiddenBtnLoadMore() {
-    btnLoadMore.classList.add('is-hidden');
-    btnLoadMore.classList.remove('visible');
-}
-
-async function onBtnLoadMore() {
-    try {
-        const data = await imageApiService.fetchImage();
-        if (data.hits.length == 0) {
-            Notify.Notify.info(
-                "Вибачте, але ви досягли кінця результатів пошуку."
-            );
-            btnLoadMore.disabled = true;
-            return;
-        }
-        if (imageApiService.hits > imageApiService.totalHits) {
-            Notify.Notify.info(
-                "Вибачте, але ви досягли кінця результатів пошуку."
-            );
-            btnLoadMore.disabled = true;
-            return;
-        }
-        renderPhotoCard(data);
-        pageScrolling();
-
-        imageApiService.hits += 40;
-    } catch (error) {
-        console.log('~ error', error);
+    if (number > 0) {
+      Notiflix.Notify.info(`Hooray! We found ${number} images.`);
     }
+    createMarkup(array, gallery);
+    lightbox.refresh();
+    loadMore.hidden = false;
+    if (array.length < 40) {
+      loadMore.hidden = true;
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-function pageScrolling() {
-    const { height: cardHeight } = document
-        .querySelector('.gallery')
-        .firstElementChild.getBoundingClientRect();
-
-    window.scrollBy({
-        top: cardHeight * 2,
-        behavior: 'smooth',
-    });
+async function onLoadMoreBtn() {
+  const valueLoadBtn = input.value;
+  let limitAdd = 40;
+  page += 1;
+  try {
+    const resp = await fetchImage(valueLoadBtn, page, limitAdd);
+    const hits = resp.data.hits;
+    const totalHits = resp.data.totalHits;
+    const maxIndex = (page - 1) * limitAdd + hits.length; 
+    createMarkup(hits, gallery);
+    onPageScrolling();
+    lightbox.refresh();
+    if (maxIndex >= totalHits) {
+      
+      loadMore.hidden = true;
+      Notiflix.Notify.info(
+        "We're sorry, but you've reached the end of search results."
+      );
+      return;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+// SCROLL
+function onPageScrolling() {
+  const { height: cardHeight } =
+    gallery.firstElementChild.getBoundingClientRect();
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }
